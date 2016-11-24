@@ -1,0 +1,58 @@
+<html>
+<head>
+    <title>http db</title>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>
+            URL : <input v-model="key"><button v-on:click="fetch_value">get</button>
+        </p>
+        <p>statusText: {{ statusText }}</p>
+        <textarea style="width:500px;height:500px;" v-model="value"></textarea>
+        <button v-on:click="replace_value">replace</button>
+        <button v-on:click="create_value">create</button>
+    </div>
+    <script>
+        var app = new Vue({
+          el: '#app',
+          data: {
+            key: '',
+            value: '',
+            statusText: ''
+          },
+          methods: {
+            fetch_value: function() {
+                this.$http.get(this.key).then((response) => {
+                    this.value = response.body;
+                    this.statusText = response.statusText;
+                    console.log(response);
+                }, (errResponse) => {
+                    this.statusText = errResponse.statusText;
+                    console.log(errResponse);
+                });
+            },
+            replace_value: function() {
+                this.$http.post('http://localhost:8081' + this.key, this.value, { headers: {"Content-Type": "text/html"}}).then(
+                    (response) => {
+                        console.log(response);
+                    }, (errResponse) => {
+                        console.log(errResponse);
+                    }
+                );
+            },
+            create_value: function() {
+                this.$http.post('http://localhost:8082' + this.key, this.value, { headers: {"Content-Type": "text/html"}}).then(
+                    (response) => {
+                        console.log(response);
+                    }, (errResponse) => {
+                        console.log(errResponse);
+                    }
+                );
+            }
+          }
+        })
+    </script>
+</body>
+</html>
